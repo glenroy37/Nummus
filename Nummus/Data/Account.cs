@@ -8,8 +8,9 @@ namespace Nummus.Data {
             this.AccountStatements = new HashSet<AccountStatement>();
         }
 
-        public Account(string name) : this() {
+        public Account(string name, NummusUser nummusUser) : this() {
             this.Name = name;
+            this.NummusUser = NummusUser;
         }
 
         [Key]
@@ -19,7 +20,7 @@ namespace Nummus.Data {
         public string Name { get; set; }
 
         [Required]
-        public virtual NummusUser User { get; set; }
+        public virtual NummusUser NummusUser { get; set; }
 
         public virtual ICollection<AccountStatement> AccountStatements { get; set; }
     }

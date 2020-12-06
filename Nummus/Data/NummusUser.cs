@@ -3,7 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Nummus.Data {
     public partial class NummusUser {
-        public NummusUser() {
+        public NummusUser(string userEmail) {
+            this.UserEmail = userEmail;
             this.Accounts = new HashSet<Account>();
         }
 

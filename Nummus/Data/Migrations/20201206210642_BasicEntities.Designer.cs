@@ -10,8 +10,8 @@ using Nummus.Data;
 namespace Nummus.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201206195952_AddBlogCreatedTimestamp")]
-    partial class AddBlogCreatedTimestamp
+    [Migration("20201206210642_BasicEntities")]
+    partial class BasicEntities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -232,12 +232,12 @@ namespace Nummus.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("NummusUserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("NummusUserId");
 
                     b.ToTable("Accounts");
                 });
@@ -400,13 +400,13 @@ namespace Nummus.Data.Migrations
 
             modelBuilder.Entity("Nummus.Data.Account", b =>
                 {
-                    b.HasOne("Nummus.Data.NummusUser", "User")
+                    b.HasOne("Nummus.Data.NummusUser", "NummusUser")
                         .WithMany("Accounts")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("NummusUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("NummusUser");
                 });
 
             modelBuilder.Entity("Nummus.Data.AccountStatement", b =>

@@ -230,12 +230,12 @@ namespace Nummus.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("NummusUserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("NummusUserId");
 
                     b.ToTable("Accounts");
                 });
@@ -398,13 +398,13 @@ namespace Nummus.Data.Migrations
 
             modelBuilder.Entity("Nummus.Data.Account", b =>
                 {
-                    b.HasOne("Nummus.Data.NummusUser", "User")
+                    b.HasOne("Nummus.Data.NummusUser", "NummusUser")
                         .WithMany("Accounts")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("NummusUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("NummusUser");
                 });
 
             modelBuilder.Entity("Nummus.Data.AccountStatement", b =>

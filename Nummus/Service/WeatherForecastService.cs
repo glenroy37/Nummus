@@ -1,8 +1,9 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Nummus.Data;
 
-namespace Nummus.Data
+namespace Nummus.Service
 {
     public class WeatherForecastService
     {
