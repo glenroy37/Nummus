@@ -8,7 +8,7 @@ using Nummus.Data;
 
 namespace Nummus.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(NummusDbContext))]
     [Migration("20201206221548_Init")]
     partial class Init
     {

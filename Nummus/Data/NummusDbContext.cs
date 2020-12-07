@@ -5,10 +5,12 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace Nummus.Data {
-    public class ApplicationDbContext : IdentityDbContext {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    public class NummusDbContext : IdentityDbContext {
+        public NummusDbContext(DbContextOptions<NummusDbContext> options)
             : base(options) {
         }
+        
+        public NummusDbContext() { }
 
         public DbSet<Account> Accounts { get; set; }
         public DbSet<AccountStatement> AccountStatements { get; set; }

@@ -6,33 +6,36 @@ using Nummus.Data;
 
 namespace Nummus.Service {
     public class NummusUserService {
-        private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly ApplicationDbContext applicationDbContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly NummusDbContext _nummusDbContext;
 
-        public NummusUserService(IHttpContextAccessor httpContextAccessor, ApplicationDbContext applicationDbContext) {
-            this.httpContextAccessor = httpContextAccessor;
-            this.applicationDbContext = applicationDbContext;
+        public NummusUserService(IHttpContextAccessor httpContextAccessor, NummusDbContext nummusDbContext) {
+            this._httpContextAccessor = httpContextAccessor;
+            this._nummusDbContext = nummusDbContext;
         }
-
+        
         public NummusUser CurrentNummusUser {
             get {
-                var userEmail = httpContextAccessor.HttpContext.User.Identity.Name;
-                var nummusUser = applicationDbContext.NummusUsers.FirstOrDefault(nummusUser =>
-                    nummusUser.UserEmail == userEmail
+                var userEmail = _httpContextAccessor?.HttpContext?.User.Identity?.Name;
+                if (userEmail == null) {
+                    return null;
+                }
+                var nummusUser = _nummusDbContext.NummusUsers.FirstOrDefault(it =>
+                    it.UserEmail == userEmail
                 );
                 if (nummusUser != null) {
                     return nummusUser;
                 }
                 CreateNewNummusUser(userEmail);
-                return applicationDbContext.NummusUsers.First(nummusUser =>
-                    nummusUser.UserEmail == userEmail
+                return _nummusDbContext.NummusUsers.First(it =>
+                    it.UserEmail == userEmail
                 );
             }
         }
 
         private void CreateNewNummusUser(string userEmail) {
-            applicationDbContext.Add(new NummusUser(userEmail));
-            applicationDbContext.SaveChanges();
+            _nummusDbContext.Add(new NummusUser(userEmail));
+            _nummusDbContext.SaveChanges();
         }
     }
 }

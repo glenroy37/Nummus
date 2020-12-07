@@ -1,31 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Nummus.Data;
 
 namespace Nummus.Service {
     public class AccountService {
 
-        private readonly ApplicationDbContext applicationDbContext;
-        private readonly NummusUserService nummusUserService;
+        private readonly NummusDbContext _nummusDbContext;
+        private readonly NummusUserService _nummusUserService;
 
-        public AccountService(ApplicationDbContext applicationDbContext, NummusUserService nummusUserService) {
-            this.applicationDbContext = applicationDbContext;
-            this.nummusUserService = nummusUserService;
+        public AccountService(NummusDbContext nummusDbContext, NummusUserService nummusUserService) {
+            this._nummusDbContext = nummusDbContext;
+            this._nummusUserService = nummusUserService;
         }
 
         public HashSet<Account> GetAllAccountsAsync() {
-            return applicationDbContext.Accounts
-                .Where(account => account.NummusUser.Id == nummusUserService.CurrentNummusUser.Id)
+            return _nummusDbContext.Accounts
+                .Where(account => account.NummusUser.Id == _nummusUserService.CurrentNummusUser.Id)
                 .ToHashSet();
-
         }
 
         public void CreateAccount(string name) {
-            Account account = new Account(name, nummusUserService.CurrentNummusUser);
-            applicationDbContext.Accounts.Add(account);
+            var account = new Account(name, _nummusUserService.CurrentNummusUser);
+            _nummusDbContext.Accounts.Add(account);
         }
     }
 }

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Nummus.Data {
     public partial class Account {
-        public Account() {
+        private Account() {
             this.AccountStatements = new HashSet<AccountStatement>();
         }
 
