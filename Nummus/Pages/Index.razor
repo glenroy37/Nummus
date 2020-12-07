@@ -1,8 +1,22 @@
 ﻿@page "/"
-
-@using Nummus.Data
 @using Nummus.Service
-@inject NummusUserService nummusUserService
+@inject NummusUserService NummusUserService
+@inject AccountService AccountService
+@inject FormatService FormatService
 
-<h1>Hello, @nummusUserService.CurrentNummusUser.UserEmail</h1>
-Welcome to your new app.
+<h1>Hello, @NummusUserService.CurrentNummusUser.UserEmail</h1>
+
+<div class="pull-right">
+    <MatButton Raised="true" Link="/Create-Account">Create new Account</MatButton>
+</div>
+
+@foreach (var account in AccountService.GetAllAccounts()) {
+<MatCard>
+        <MatCardContent>
+            <MatHeadline6>@account.Name</MatHeadline6>
+            <MatSubtitle2>
+                @FormatService.FormatToLocalCurrency(AccountService.GetCurrentAccountBalance(@account))
+            </MatSubtitle2>
+        </MatCardContent>
+    </MatCard>
+}

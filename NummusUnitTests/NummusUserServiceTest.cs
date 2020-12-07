@@ -7,7 +7,7 @@ using Nummus.Service;
 using NUnit.Framework;
 
 namespace NummusUnitTests {
-    public class Tests {
+    public class NummusUserServiceTest {
         private NummusUserService _nummusUserService;
         private NummusDbContext _nummusDbContext;
         private Mock<IHttpContextAccessor> _mockHttpContextAccessor;

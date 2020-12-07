@@ -14,6 +14,8 @@ namespace Nummus.Service {
             this._nummusDbContext = nummusDbContext;
         }
         
+        public NummusUserService() { } //Here for the tests
+        
         public NummusUser CurrentNummusUser {
             get {
                 var userEmail = _httpContextAccessor?.HttpContext?.User.Identity?.Name;

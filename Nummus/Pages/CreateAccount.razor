@@ -1,0 +1,31 @@
+@page "/Create-Account"
+@using Nummus.Service
+@using Nummus.Exception
+@inject AccountService AccountService
+@inject NavigationManager NavigationManager
+
+<div>
+    <MatTextField @bind-Value="@_accountName" Label="Account name"></MatTextField>
+</div>
+<div>
+    <MatButton Raised="true" OnClick="@DoCreateAccount">Create Account</MatButton>
+</div>
+<div>
+    @_errorText
+</div>
+
+@code {
+    string _accountName = "";
+    string _errorText = "";
+
+    void DoCreateAccount(MouseEventArgs e) {
+        if (_accountName != "") {
+            try {
+                AccountService.CreateAccount(_accountName);
+                NavigationManager.NavigateTo("/");
+            } catch (NummusAccountAlreadyExistsException ex) {
+                _errorText = ex.Message;
+            }
+        }
+    }
+}

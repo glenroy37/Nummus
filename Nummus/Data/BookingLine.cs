@@ -20,7 +20,6 @@ namespace Nummus.Data {
         [Required]
         public virtual Account Account {get; set;}
 
-        [Required]
         public virtual Category Category { get; set; }
 
         public virtual AccountStatement AccountStatement { get; set; }

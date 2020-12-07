@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,7 +9,7 @@ namespace Nummus.Data {
 
         public Account(string name, NummusUser nummusUser) : this() {
             this.Name = name;
-            this.NummusUser = NummusUser;
+            this.NummusUser = nummusUser;
         }
 
         [Key]
