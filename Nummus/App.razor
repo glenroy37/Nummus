@@ -1,13 +1,29 @@
 <MatPortalHost></MatPortalHost>
-<CascadingAuthenticationState>
-    <Router AppAssembly="@typeof(Program).Assembly">
-        <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
-        </Found>
-        <NotFound>
-            <LayoutView Layout="@typeof(MainLayout)">
-                <p>Sorry, there's nothing at this address.</p>
-            </LayoutView>
-        </NotFound>
-    </Router>
-</CascadingAuthenticationState>
+<MediaQueryList>
+    <MatThemeProvider Theme=@_standardTheme>
+        <CascadingAuthenticationState>
+            <Router AppAssembly="@typeof(Program).Assembly">
+                <Found Context="routeData">
+                    <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
+                </Found>
+                <NotFound>
+                    <LayoutView Layout="@typeof(MainLayout)">
+                        <p>Sorry, there's nothing at this address.</p>
+                    </LayoutView>
+                </NotFound>
+            </Router>
+        </CascadingAuthenticationState>
+    </MatThemeProvider>
+</MediaQueryList>
+
+@code {
+    MatTheme _standardTheme = new MatTheme {
+        Primary = "#191970",
+        Secondary = "#4169E1",
+        Background = "#121212",
+        Surface = "#232323",
+        OnSurface = "#ffffff",
+        OnPrimary = "#ffffff",
+        OnSecondary = "#ffffff"
+    };
+}

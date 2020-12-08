@@ -1,27 +1,69 @@
-﻿@inherits LayoutComponentBase
+﻿@using Nummus.Helper
+@using Microsoft.EntityFrameworkCore.Diagnostics
+@inherits LayoutComponentBase
+@inject BrowserHelper BrowserHelper
 
 <div class="page">
     <AuthorizeView>
         <Authorized>
             <div class="sidebar">
-                <NavMenu />
             </div>
         </Authorized>
     </AuthorizeView>
-    <div class="main">
-        <div class="top-row px-4 auth">
-            <LoginDisplay />
-        </div>
-
-        <AuthorizeView>
-            <Authorized>
-                <div class="content px-4">
-                    @Body
-                </div>
-            </Authorized>
-            <NotAuthorized>
-                Please login to use the application
-            </NotAuthorized>
-        </AuthorizeView>
-    </div>
+    <MatAppBarContainer>
+        <MatAppBar Fixed="true">
+            <MatAppBarRow>
+                <MatAppBarSection>
+                    <MatIconButton Icon="menu" OnClick=@ToggleMenuOpen></MatIconButton>
+                    <MatAppBarTitle>Nummus</MatAppBarTitle>
+                </MatAppBarSection>
+                <MatAppBarSection Align="@MatAppBarSectionAlign.End">
+                    <LoginDisplay/>
+                </MatAppBarSection>
+            </MatAppBarRow>
+        </MatAppBar>
+        <MatAppBarContent>
+            <MatDrawerContainer Style="width: 100vw; height: 100vh;">
+                <MatDrawer id="mobile-drawer" @bind-Opened="@_menuOpened" Mode="@_matDrawerMode">
+                    <MatNavItem Href="/">Accounts</MatNavItem>
+                    <MatNavItem Href="/">Account Statements</MatNavItem>
+                    <MatNavItem Href="/">Budget Reports</MatNavItem>
+                    <MatNavItem Href="/">Settings</MatNavItem>
+                </MatDrawer>
+                <MatDrawerContent>
+                    <AuthorizeView>
+                        <Authorized>
+                            <div class="content px-4">
+                                @Body
+                            </div>
+                        </Authorized>
+                        <NotAuthorized>
+                            Please login to use the application
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </MatDrawerContent>
+            </MatDrawerContainer>
+        </MatAppBarContent>
+    </MatAppBarContainer>
 </div>
+
+@code {
+    bool _menuOpened = false;
+    MatDrawerMode _matDrawerMode = MatDrawerMode.Modal;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        var browserDimension = await BrowserHelper.GetDimensions();
+        if (firstRender) {
+            if (browserDimension.Width > 899) {
+                _matDrawerMode = MatDrawerMode.Dismissible;
+                _menuOpened = true;
+                StateHasChanged();
+            }
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    void ToggleMenuOpen() {
+        _menuOpened= ! _menuOpened;
+    }
+}

@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Nummus.Areas.Identity;
 using Nummus.Data;
 using Nummus.Service;
+using Nummus.Helper;
 
 namespace Nummus {
     public class Startup {
@@ -34,8 +35,11 @@ namespace Nummus {
             services.AddMatBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddDatabaseDeveloperPageExceptionFilter();
+
+            //Own Services
             services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<FormatService>();
+            services.AddScoped<BrowserHelper>();
             services.AddScoped<NummusUserService>();
             services.AddScoped<AccountService>();
         }

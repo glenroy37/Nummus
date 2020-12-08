@@ -14,9 +14,15 @@
     <base href="~/" />
     <script src="_content/MatBlazor/dist/matBlazor.js"></script>
     <link href="_content/MatBlazor/dist/matBlazor.css" rel="stylesheet" />
-    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
     <link href="css/site.css" rel="stylesheet" />
-    <link href="Nummus.styles.css" rel="stylesheet" />
+    <script type="text/javascript">
+            window.getDimensions = function() {
+                return {
+                        width: window.innerWidth,
+                        height: window.innerHeight
+                    };
+            };
+        </script>
 </head>
 <body>
     <component type="typeof(App)" render-mode="ServerPrerendered" />

@@ -1,12 +1,17 @@
-﻿<AuthorizeView>
+﻿@using System.Reflection.Metadata
+<AuthorizeView>
     <Authorized>
-        <a href="Identity/Account/Manage">Hello, @context.User.Identity.Name!</a>
-        <form method="post" action="Identity/Account/LogOut">
-            <button type="submit" class="nav-link btn btn-link">Log out</button>
-        </form>
+        Hello, @context.User.Identity.Name!
+        <MatButton Outlined="true" class="force-white-text">
+            Log Out
+            <!-- TODO: Figure out how to log out with MatButton -->
+            <form id="logout-form" style="display: none;" method="post" action="Identity/Account/LogOut">
+                <button type="submit" class="nav-link btn btn-link">Log out</button>
+            </form>
+        </MatButton>
     </Authorized>
     <NotAuthorized>
-        <a href="Identity/Account/Register">Register</a>
-        <a href="Identity/Account/Login">Log in</a>
+        <MatButton Outlined="true" class="force-white-text"><a href="Identity/Account/Register">Register</a></MatButton>
+        <MatButton Outlined="true" class="force-white-text"><a href="Identity/Account/Login">Log Out</a></MatButton>
     </NotAuthorized>
 </AuthorizeView>

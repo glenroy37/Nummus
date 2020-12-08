@@ -4,14 +4,15 @@
 @inject AccountService AccountService
 @inject FormatService FormatService
 
-<h1>Hello, @NummusUserService.CurrentNummusUser.UserEmail</h1>
+<h1 class="margin-left-2">Your accounts</h1>
 
-<div class="pull-right">
+<div class="flex-right margin-right-2">
     <MatButton Raised="true" Link="/Create-Account">Create new Account</MatButton>
 </div>
 
-@foreach (var account in AccountService.GetAllAccounts()) {
-<MatCard>
+<div class="custom-mat-card-flex-container">
+    @foreach (var account in AccountService.GetAllAccounts()) {
+    <MatCard class="custom-mat-card">
         <MatCardContent>
             <MatHeadline6>@account.Name</MatHeadline6>
             <MatSubtitle2>
@@ -19,4 +20,5 @@
             </MatSubtitle2>
         </MatCardContent>
     </MatCard>
-}
+    }
+</div>

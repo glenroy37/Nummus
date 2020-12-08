@@ -1,33 +1,62 @@
-@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+/* MatBlazor ignores its own theme implementation many times. 
+ All hard coded colour codes shouldn't be necessary any more with future updates of MatBlazor*/
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0;
+    background-color: #121212;
+    color: #ffffff;
 }
 
-a, .btn-link {
-    color: #0366d6;
+.mdc-list-item {
+    color: #ffffff !important;
 }
 
-.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+.mdc-drawer {
+    background-color: #232323;
+}
+
+.margin-left-2 {
+    margin-left: 32px;
+}
+
+.margin-right-2 {
+    margin-right: 32px;
+}
+
+.flex-right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.custom-mat-card-flex-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+@media (min-width: 900px) {
+    .custom-mat-card {
+        flex:  1 0 45%;
+        margin: 8px 32px;
+        padding: 10px 10px 10px 10px;
+    }
+}
+
+@media (max-width: 900px) {
+    .custom-mat-card {
+        flex:  1 0 90%;
+        margin: 8px 32px;
+        padding: 10px 10px 10px 10px;
+    }
+}
+
+.force-white-text {
+    color: #ffffff !important;
 }
 
 .content {
     padding-top: 1.1rem;
-}
-
-.valid.modified:not([type=checkbox]) {
-    outline: 1px solid #26b050;
-}
-
-.invalid {
-    outline: 1px solid red;
-}
-
-.validation-message {
-    color: red;
 }
 
 #blazor-error-ui {
