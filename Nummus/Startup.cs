@@ -37,8 +37,8 @@ namespace Nummus {
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             //Own Services
-            services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<FormatService>();
+            services.AddScoped<IdentityUserService>();
             services.AddScoped<BrowserHelper>();
             services.AddScoped<NummusUserService>();
             services.AddScoped<AccountService>();

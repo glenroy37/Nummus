@@ -1,13 +1,12 @@
 ﻿@using System.Reflection.Metadata
 <AuthorizeView>
     <Authorized>
-        Hello, @context.User.Identity.Name!
+        Hello, <MatButtonLink Outlined="true" Href="Identity/Account/Manage/Index" class="force-white-text">@context.User.Identity.Name!</MatButtonLink>
         <form id="logout-form" method="post" action="Identity/Account/LogOut">
             <MatButton Outlined="true" class="force-white-text" Type="submit">Log out </MatButton>
         </form>
     </Authorized>
     <NotAuthorized>
-        <MatButtonLink Href="Identity/Account/Register" Outlined="true" class="force-white-text">Register</MatButtonLink>
         <MatButtonLink Href="Identity/Account/Login" Outlined="true" class="force-white-text">Log In</MatButtonLink>
     </NotAuthorized>
 </AuthorizeView>
