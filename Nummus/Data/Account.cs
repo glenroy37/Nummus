@@ -4,12 +4,13 @@ using System.ComponentModel.DataAnnotations;
 namespace Nummus.Data {
     public partial class Account {
         private Account() {
-            this.AccountStatements = new HashSet<AccountStatement>();
+            AccountStatements = new HashSet<AccountStatement>();
+            BookingLines = new HashSet<BookingLine>();
         }
 
         public Account(string name, NummusUser nummusUser) : this() {
-            this.Name = name;
-            this.NummusUser = nummusUser;
+            Name = name;
+            NummusUser = nummusUser;
         }
 
         [Key]
@@ -21,6 +22,8 @@ namespace Nummus.Data {
         [Required]
         public virtual NummusUser NummusUser { get; set; }
 
-        public virtual ICollection<AccountStatement> AccountStatements { get; set; }
+        public virtual ICollection<AccountStatement> AccountStatements { get; }
+        
+        public virtual ICollection<BookingLine> BookingLines { get; }
     }
 }

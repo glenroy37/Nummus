@@ -54,7 +54,7 @@ namespace NummusUnitTests {
         [Test]
         public void GetAccountBalanceNoStatementNoBookingLine() {
             var account = CreateAccountNoStatementNoBookingLine("new-account");
-            Assert.AreEqual(decimal.Zero, _accountService.GetCurrentAccountBalance(account));
+            Assert.AreEqual(decimal.Zero, _accountService.GetCurrentAccountBalance(account.Id));
         }
 
         [Test]
@@ -64,14 +64,14 @@ namespace NummusUnitTests {
             var account = CreateAccountNoStatementsNewBookingLines("new-account", newBookingLine1Amount,
                 newBookingLine2Amount);
             Assert.AreEqual(newBookingLine1Amount + newBookingLine2Amount,
-                _accountService.GetCurrentAccountBalance(account));
+                _accountService.GetCurrentAccountBalance(account.Id));
         }
 
         [Test]
         public void GetAccountBalanceWithStatementsNoNewBookingLines() {
             const decimal balance = 123.45m;
             var account = CreateAccountWithStatementsNoNewBookingLine("new-account", balance);
-            Assert.AreEqual(balance, _accountService.GetCurrentAccountBalance(account));
+            Assert.AreEqual(balance, _accountService.GetCurrentAccountBalance(account.Id));
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace NummusUnitTests {
             var account = CreateAccountWithStatementsAndNewBookingLines("new-account", balance,
                 newBookingLine1Amount, newBookingLine2Amount);
             Assert.AreEqual(balance + newBookingLine1Amount + newBookingLine2Amount,
-                _accountService.GetCurrentAccountBalance(account));
+                _accountService.GetCurrentAccountBalance(account.Id));
 
         }
 

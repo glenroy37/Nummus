@@ -1,0 +1,54 @@
+@using Nummus.Service
+@inject FormatService FormatService
+@inject AccountService AccountService
+@inject IMatDialogService MatDialogService
+<div class="account-card">
+    <div class="flex flex-space-between">
+        <div>
+            <MatHeadline6 class="margin-1">@AccountName</MatHeadline6>
+        </div>
+        <div class="flex flex-align-center">
+            <MatButton Primary="true"
+                       Class="force-white-text margin-right"
+                       OnClick="@OpenBookingLineDialog">
+                <MatIcon Icon="add_box" />
+            </MatButton>
+        </div>
+    </div>
+    <MatSubtitle2 Class="margin-left-1 margin-top-0">
+        @FormatService.FormatToLocalCurrency(AccountService.GetCurrentAccountBalance(AccountId))
+    </MatSubtitle2>
+</div>
+
+<MatDialog IsOpen="@_addBookingLineDialogOpen">
+    <MatDialogTitle Class="force-white-text">Add Booking Line</MatDialogTitle>
+    <MatDialogContent>
+        
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@CloseBookingLineDialog">Cancel</MatButton>
+        <MatButton OnClick="@SaveBookingLine">Save</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@code {
+    [Parameter]
+    public int AccountId { get; set; }
+    
+    [Parameter]
+    public string AccountName { get; set; }
+
+    private bool _addBookingLineDialogOpen;
+
+    void OpenBookingLineDialog() {
+        _addBookingLineDialogOpen = true;
+    }
+
+    void CloseBookingLineDialog() {
+        _addBookingLineDialogOpen = false;
+    }
+
+    void SaveBookingLine() {
+        _addBookingLineDialogOpen = false;
+    }
+}

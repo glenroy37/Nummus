@@ -25,9 +25,9 @@ namespace Nummus.Service {
                 .ToArray();
         }
 
-        public decimal GetCurrentAccountBalance(Account account) {
+        public decimal GetCurrentAccountBalance(decimal accountId) {
             var lastClosingSum = _nummusDbContext.AccountStatements
-                .Where(statement => statement.Account == account)
+                .Where(statement => statement.Account.Id == accountId)
                 .OrderByDescending(statement => statement.BookingDate)
                 .Select(statement => statement.ClosingSum)
                 .FirstOrDefault();
