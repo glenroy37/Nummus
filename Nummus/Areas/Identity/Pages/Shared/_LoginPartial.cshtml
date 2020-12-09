@@ -1,8 +1,7 @@
-﻿@using Microsoft.AspNetCore.Identity
-@using Nummus.Service
+﻿@using Nummus.Helper
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
-@inject IdentityUserService IdentityUserService
+@inject IdentityHelper IdentityHelper
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <ul class="navbar-nav">
@@ -16,7 +15,7 @@
             </form>
         </li>
     } else {
-        @if (IdentityUserService.UserRegistrationEnabled) {
+        @if (IdentityHelper.UserRegistrationEnabled) {
             <li class="nav-item">
                 <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
             </li>

@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Configuration;
 
-namespace Nummus.Service {
-    public class IdentityUserService {
+namespace Nummus.Helper {
+    public class IdentityHelper {
         private readonly IConfiguration _configuration;
 
-        public IdentityUserService(IConfiguration configuration) {
+        public IdentityHelper(IConfiguration configuration) {
             _configuration = configuration;
         }
 

@@ -1,4 +1,6 @@
 ﻿@using System.Reflection.Metadata
+@using Nummus.Helper
+@inject IdentityHelper IdentityHelper
 <AuthorizeView>
     <Authorized>
         Hello, <MatButtonLink Outlined="true" Href="Identity/Account/Manage/Index" class="force-white-text">@context.User.Identity.Name!</MatButtonLink>
@@ -7,6 +9,9 @@
         </form>
     </Authorized>
     <NotAuthorized>
+        @if (IdentityHelper.UserRegistrationEnabled) {
+            <MatButtonLink Href="Identity/Account/Register" Outlined="true" class="force-white-text">Register</MatButtonLink>
+        }
         <MatButtonLink Href="Identity/Account/Login" Outlined="true" class="force-white-text">Log In</MatButtonLink>
     </NotAuthorized>
 </AuthorizeView>

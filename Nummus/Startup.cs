@@ -16,17 +16,17 @@ using Nummus.Helper;
 namespace Nummus {
     public class Startup {
         public Startup(IConfiguration configuration) {
-            Configuration = configuration;
+            _configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration _configuration;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services) {
             services.AddDbContext<NummusDbContext>(options =>
                 options.UseMySql(
-                    Configuration.GetConnectionString("DefaultConnection"),
+                    _configuration.GetConnectionString("DefaultConnection"),
                     new MariaDbServerVersion(new Version(10, 3))));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<NummusDbContext>();
@@ -38,7 +38,7 @@ namespace Nummus {
 
             //Own Services
             services.AddSingleton<FormatService>();
-            services.AddScoped<IdentityUserService>();
+            services.AddScoped<IdentityHelper>();
             services.AddScoped<BrowserHelper>();
             services.AddScoped<NummusUserService>();
             services.AddScoped<AccountService>();
