@@ -2,6 +2,6 @@ using System;
 
 namespace Nummus.Exception {
     public class NummusAccountAlreadyExistsException : ApplicationException {
-        public NummusAccountAlreadyExistsException(string message) : base (message) { }
+        public NummusAccountAlreadyExistsException() : base ("An account with that name already exists!") { }
     }
 }

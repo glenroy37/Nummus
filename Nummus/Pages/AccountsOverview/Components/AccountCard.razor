@@ -1,7 +1,9 @@
 @using Nummus.Service
+@using Nummus.Data
 @inject FormatService FormatService
-@inject AccountService AccountService
+@inject IAccountService AccountService
 @inject IMatDialogService MatDialogService
+@inject IBookingLineService BookingLineService
 <div class="account-card">
     <div class="flex flex-space-between">
         <div>
@@ -23,7 +25,15 @@
 <MatDialog IsOpen="@_addBookingLineDialogOpen">
     <MatDialogTitle Class="force-white-text">Add Booking Line</MatDialogTitle>
     <MatDialogContent>
-        
+        <div class="margin-1">
+            <MatTextField @bind-Value="@_newBookingLine.BookingText" Label="Booking line text" />
+        </div>
+        <div class="margin-1">
+            <MatTextField @bind-Value="@_newBookingLine.Amount" TValue="decimal" Label="Booking line amount" />
+        </div>
+        <div class="margin-1">
+            <MatDatePicker @bind-Value="@_newBookingLine.BookingTime" EnableTime="true" />
+        </div>
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@CloseBookingLineDialog">Cancel</MatButton>
@@ -39,16 +49,19 @@
     public string AccountName { get; set; }
 
     private bool _addBookingLineDialogOpen;
+    private BookingLine _newBookingLine = new BookingLine();
 
     void OpenBookingLineDialog() {
         _addBookingLineDialogOpen = true;
     }
 
     void CloseBookingLineDialog() {
+        _newBookingLine = new BookingLine();
         _addBookingLineDialogOpen = false;
     }
 
     void SaveBookingLine() {
-        _addBookingLineDialogOpen = false;
+        BookingLineService.CreateBookingLine(AccountId, _newBookingLine);
+        CloseBookingLineDialog();
     }
 }

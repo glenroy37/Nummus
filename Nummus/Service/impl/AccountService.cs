@@ -1,28 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
 using Nummus.Data;
 using Nummus.Exception;
 
 namespace Nummus.Service {
-    public class AccountService {
+    public class AccountService : IAccountService {
 
         private readonly NummusDbContext _nummusDbContext;
         private readonly NummusUserService _nummusUserService;
 
         public AccountService(NummusDbContext nummusDbContext, NummusUserService nummusUserService) {
-            this._nummusDbContext = nummusDbContext;
-            this._nummusUserService = nummusUserService;
+            _nummusDbContext = nummusDbContext;
+            _nummusUserService = nummusUserService;
         }
 
         public Account[] GetAllAccounts() {
             return _nummusDbContext.Accounts
                 .Where(account => account.NummusUser.Id == _nummusUserService.CurrentNummusUser.Id)
                 .ToArray();
+        }
+
+        public Account GetAccount(int id) {
+            return _nummusDbContext.Accounts
+                .FirstOrDefault(it => it.Id == id);
         }
 
         public decimal GetCurrentAccountBalance(decimal accountId) {
@@ -43,7 +42,7 @@ namespace Nummus.Service {
         public void CreateAccount(string name) {
             var existingAccount = _nummusDbContext.Accounts.FirstOrDefault(it => it.Name == name);
             if (existingAccount != null) {
-                throw new NummusAccountAlreadyExistsException("An account with that name already exists!");
+                throw new NummusAccountAlreadyExistsException();
             }
 
             var account = new Account(name, _nummusUserService.CurrentNummusUser);
