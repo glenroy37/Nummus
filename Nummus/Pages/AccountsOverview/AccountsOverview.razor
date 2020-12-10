@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using Nummus.Service
 @using Nummus.Pages.AccountsOverview.Components
+@using Nummus.Exception
 @inject NummusUserService NummusUserService
 @inject AccountService AccountService
 @inject FormatService FormatService
@@ -8,7 +9,7 @@
 <h1 class="margin-left-2">Your accounts</h1>
 
 <div class="flex flex-right margin-right-2">
-    <MatButton Raised="true" Link="/Create-Account">Create new Account</MatButton>
+    <MatButton Raised="true" OnClick="@OpenCreateAccountDialog">Create new Account</MatButton>
 </div>
 
 <div class="custom-mat-card-flex-container">
@@ -17,3 +18,44 @@
                      AccountName="@account.Name"/>
     }
 </div>
+
+<MatDialog IsOpen="@_createAccountDialogOpen">
+    <MatDialogTitle Class="force-white-text">Add Booking Line</MatDialogTitle>
+    <MatDialogContent>
+        <div class="margin-1">
+            <MatTextField @bind-Value="@_accountName" Label="Account name"></MatTextField>
+        </div>
+        <div class="margin-1 force-white-text">
+            @_errorText
+        </div>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@CloseCreateAccountDialog" Class="margin-1">Cancel</MatButton>
+        <MatButton OnClick="@DoCreateAccount">Create</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@code {
+    private bool _createAccountDialogOpen;
+    private string _accountName = "";
+    private string _errorText = "";
+
+    private void DoCreateAccount(MouseEventArgs e) {
+        if (_accountName != "") {
+            try {
+                AccountService.CreateAccount(_accountName);
+                CloseCreateAccountDialog();
+            } catch (NummusAccountAlreadyExistsException ex) {
+                _errorText = ex.Message;
+            }
+        }
+    }
+    private void CloseCreateAccountDialog() {
+        _accountName = "";
+        _createAccountDialogOpen = false;
+    }
+
+    private void OpenCreateAccountDialog() {
+        _createAccountDialogOpen = true;
+    }
+}

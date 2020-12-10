@@ -13,7 +13,11 @@
         <MatAppBar Fixed="true">
             <MatAppBarRow>
                 <MatAppBarSection>
-                    <MatIconButton Icon="menu" OnClick=@ToggleMenuOpen></MatIconButton>
+                    <AuthorizeView>
+                        <Authorized>
+                            <MatIconButton Icon="menu" OnClick=@ToggleMenuOpen></MatIconButton>
+                        </Authorized>
+                    </AuthorizeView>
                     <MatAppBarTitle>Nummus</MatAppBarTitle>
                 </MatAppBarSection>
                 <MatAppBarSection Align="@MatAppBarSectionAlign.End">
@@ -22,26 +26,27 @@
             </MatAppBarRow>
         </MatAppBar>
         <MatAppBarContent>
-            <MatDrawerContainer Style="width: 100vw; height: 100vh;">
-                <MatDrawer id="mobile-drawer" @bind-Opened="@_menuOpened" Mode="@_matDrawerMode">
-                    <MatNavItem Href="/">Accounts</MatNavItem>
-                    <MatNavItem Href="/">Account Statements</MatNavItem>
-                    <MatNavItem Href="/">Budget Reports</MatNavItem>
-                    <MatNavItem Href="/">Settings</MatNavItem>
-                </MatDrawer>
-                <MatDrawerContent>
-                    <AuthorizeView>
-                        <Authorized>
+            <AuthorizeView>
+                <Authorized>
+                    <MatDrawerContainer Style="width: 100vw; height: 100vh;">
+                        <MatDrawer id="mobile-drawer" @bind-Opened="@_menuOpened" Mode="@_matDrawerMode">
+                            <MatNavItem Href="/">Accounts</MatNavItem>
+                            <MatNavItem Href="/">Account Statements</MatNavItem>
+                            <MatNavItem Href="/">Budget Reports</MatNavItem>
+                            <MatNavItem Href="/">Settings</MatNavItem>
+                        </MatDrawer>
+                        <MatDrawerContent>
                             <div class="content px-4">
                                 @Body
                             </div>
-                        </Authorized>
-                        <NotAuthorized>
-                            Please login to use the application
-                        </NotAuthorized>
-                    </AuthorizeView>
-                </MatDrawerContent>
-            </MatDrawerContainer>
+                        </MatDrawerContent>
+                    </MatDrawerContainer>
+                </Authorized>
+                <NotAuthorized>
+                    Please login to use the application
+                </NotAuthorized>
+            </AuthorizeView>
+
         </MatAppBarContent>
     </MatAppBarContainer>
 </div>
@@ -63,6 +68,7 @@
     }
 
     void ToggleMenuOpen() {
-        _menuOpened= ! _menuOpened;
+        _menuOpened = !_menuOpened;
     }
+
 }
