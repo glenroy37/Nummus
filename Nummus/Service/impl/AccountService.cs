@@ -32,6 +32,7 @@ namespace Nummus.Service {
                 .FirstOrDefault();
 
             var bookingsSinceLastStatement = _nummusDbContext.BookingLines
+                .Where(bookingLine => bookingLine.Account.Id == accountId)
                 .Where(bookingLine => bookingLine.AccountStatement == null)
                 .Select(bookingLine => bookingLine.Amount)
                 .ToHashSet();

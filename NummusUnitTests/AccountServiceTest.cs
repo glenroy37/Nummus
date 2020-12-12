@@ -61,8 +61,12 @@ namespace NummusUnitTests {
         public void GetAccountBalanceNoStatementsNewBookingLines() {
             const decimal newBookingLine1Amount = 47.11m;
             const decimal newBookingLine2Amount = -1.23m;
+            const decimal shouldntInclude1 = 2m;
+            const decimal shouldntInclude2 = 2m;
             var account = CreateAccountNoStatementsNewBookingLines("new-account", newBookingLine1Amount,
                 newBookingLine2Amount);
+            CreateAccountNoStatementsNewBookingLines("shouldnt-include", shouldntInclude1, 
+                shouldntInclude2);
             Assert.AreEqual(newBookingLine1Amount + newBookingLine2Amount,
                 _accountService.GetCurrentAccountBalance(account.Id));
         }
@@ -70,7 +74,9 @@ namespace NummusUnitTests {
         [Test]
         public void GetAccountBalanceWithStatementsNoNewBookingLines() {
             const decimal balance = 123.45m;
+            const decimal shouldntInclude = 1m;
             var account = CreateAccountWithStatementsNoNewBookingLine("new-account", balance);
+            CreateAccountWithStatementsNoNewBookingLine("shouldnt-include", shouldntInclude);
             Assert.AreEqual(balance, _accountService.GetCurrentAccountBalance(account.Id));
         }
 
@@ -79,8 +85,13 @@ namespace NummusUnitTests {
             const decimal balance = 123.45m;
             const decimal newBookingLine1Amount = 47.11m;
             const decimal newBookingLine2Amount = -1.23m;
+            const decimal shouldntIncludeBalance = 1m;
+            const decimal shouldntIncludeBookingLine1 = 1m;
+            const decimal shouldntIncludeBookingLine2 = 1m;
             var account = CreateAccountWithStatementsAndNewBookingLines("new-account", balance,
                 newBookingLine1Amount, newBookingLine2Amount);
+            CreateAccountWithStatementsAndNewBookingLines("shouldnt-include", shouldntIncludeBalance,
+                shouldntIncludeBookingLine1, shouldntIncludeBookingLine2);
             Assert.AreEqual(balance + newBookingLine1Amount + newBookingLine2Amount,
                 _accountService.GetCurrentAccountBalance(account.Id));
 

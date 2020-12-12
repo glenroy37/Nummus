@@ -10,16 +10,46 @@
             <MatHeadline6 class="margin-1">@AccountName</MatHeadline6>
         </div>
         <div class="flex flex-align-center">
-            <MatButton Primary="true"
-                       Class="force-white-text margin-right"
-                       OnClick="@OpenBookingLineDialog">
-                <MatIcon Icon="add_box" />
-            </MatButton>
+            <MatIconButton Class="force-white-text margin-right"
+                           OnClick="@OpenBookingLineDialog">
+                <MatIcon Icon="add_box"/>
+            </MatIconButton>
         </div>
     </div>
-    <MatSubtitle2 Class="margin-left-1 margin-top-0">
-        @FormatService.FormatToLocalCurrency(AccountService.GetCurrentAccountBalance(AccountId))
-    </MatSubtitle2>
+    <div class="flex flex-space-between">
+        <div>
+            <MatSubtitle2 Class="margin-left-1 margin-top-0">
+                @FormatService.FormatToLocalCurrency(AccountService.GetCurrentAccountBalance(AccountId))
+            </MatSubtitle2>
+        </div>
+        <div class="flex flex-align-center">
+            <MatIconButton Class="force-white-text margin-right"
+                       OnClick="@ToggleTransactions">
+                
+                @if (_showTransactions) {
+                    <MatIcon Icon="keyboard_arrow_up" />
+                } else {
+                    <MatIcon Icon="keyboard_arrow_down" />
+                }
+            </MatIconButton>
+        </div>
+    </div>
+    @if (_showTransactions) {
+        <MatDivider />
+        @foreach (var bookingLine in _bookingLines) {
+            <div class="flex  flex-space-between">
+                <div>
+                    @bookingLine.BookingTime
+                </div>
+                <div>
+                    @bookingLine.BookingText
+                </div>
+                <div>
+                    @FormatService.FormatToLocalCurrency(bookingLine.Amount)
+                </div>
+            </div>
+        }
+    }
 </div>
 
 <MatDialog IsOpen="@_addBookingLineDialogOpen">
@@ -48,11 +78,21 @@
     [Parameter]
     public string AccountName { get; set; }
 
+    private const int PageSize = 10;
+
     private bool _addBookingLineDialogOpen;
+    private bool _showTransactions;
+    private int _currentTransactionsPage = 0;
+    private int _pagesCount = 0;
+    private BookingLine[] _bookingLines = {};
     private BookingLine _newBookingLine = new BookingLine();
 
     void OpenBookingLineDialog() {
         _addBookingLineDialogOpen = true;
+    }
+
+    void ToggleTransactions() {
+        _showTransactions = !_showTransactions;
     }
 
     void CloseBookingLineDialog() {
@@ -60,8 +100,20 @@
         _addBookingLineDialogOpen = false;
     }
 
+    void LoadPage(int pageNumber) {
+        _bookingLines = BookingLineService.GetBookingLinesPaged(AccountId, PageSize, pageNumber);
+        _currentTransactionsPage = pageNumber;
+    }
+
     void SaveBookingLine() {
         BookingLineService.CreateBookingLine(AccountId, _newBookingLine);
+        LoadPage(_currentTransactionsPage);
         CloseBookingLineDialog();
     }
+
+    protected override void OnInitialized() {
+        base.OnInitialized();
+        LoadPage(_currentTransactionsPage);
+    }
+
 }

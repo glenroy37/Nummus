@@ -20,7 +20,9 @@ namespace Nummus.Service {
                 throw new NummusInvalidAccountIdException();
             }
             
-            return account.BookingLines
+            return _nummusDbContext
+                .BookingLines
+                .Where(it => it.Account == account)
                 .OrderByDescending(it => it.BookingTime)
                 .Skip(page * size)
                 .Take(size)
