@@ -1,0 +1,49 @@
+<div class="flex flex-right flex-align-center">
+    <div>
+        Page @CurrentPage/@_pages
+    </div>
+    <div>
+        <MatIconButton OnClick="@PreviousPage" Class="paginator-button">
+            <MatIcon Icon="keyboard_arrow_left" />
+        </MatIconButton>
+    </div>
+    <div>
+        <MatIconButton OnClick="@NextPage" Class="paginator-button">
+            <MatIcon Icon="keyboard_arrow_right" />
+        </MatIconButton>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int ItemCount { get; set; }
+    
+    [Parameter]
+    public int PageSize { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnPageChange { get; set; }
+    
+    private int _pageIndex;
+    private int CurrentPage => _pageIndex + 1;
+    private int _pages = 1;
+
+    protected override void OnParametersSet() {
+        _pages = Decimal.ToInt32(Decimal.Ceiling(Decimal.Divide(ItemCount, PageSize)));
+        base.OnParametersSet();
+    }
+
+    private void NextPage() {
+        if (CurrentPage < _pages) {
+            _pageIndex++;
+            OnPageChange.InvokeAsync(_pageIndex);
+        }
+    }
+
+    private void PreviousPage() {
+        if (CurrentPage > 1) {
+            _pageIndex--;
+            OnPageChange.InvokeAsync(_pageIndex);
+        }
+    }
+}

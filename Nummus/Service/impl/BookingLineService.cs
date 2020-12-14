@@ -30,12 +30,8 @@ namespace Nummus.Service {
         }
 
         public int CountBookingLines(int accountId) {
-            var account = _accountService.GetAccount(accountId);
-            if (account == null) {
-                throw new NummusInvalidAccountIdException();
-            }
-            
-            return account.BookingLines.Count;
+            return _nummusDbContext.BookingLines
+                .Count(it => it.Account.Id == accountId);
         }
 
         public void CreateBookingLine(int accountId, BookingLine bookingLine) {

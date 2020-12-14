@@ -1,0 +1,18 @@
+@using Nummus.Service
+@using Nummus.Data
+@inject FormatService FormatService
+<div class="flex  flex-space-between">
+    <div>
+        @BookingLine.BookingTime.ToString("dd/MM/yy HH:mm")
+    </div>
+    <div>
+        @BookingLine.BookingText
+    </div>
+    <div class="@(BookingLine.Amount < 0 ? "negative-colour" : "positive-colour")">
+        @FormatService.FormatToLocalCurrency(BookingLine.Amount)
+    </div>
+</div>
+@code {
+    [Parameter] 
+    public BookingLine BookingLine { get; set; }
+}

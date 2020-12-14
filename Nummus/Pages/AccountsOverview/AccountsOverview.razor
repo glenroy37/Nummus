@@ -14,8 +14,7 @@
 
 <div class="custom-mat-card-flex-container">
     @foreach (var account in AccountService.GetAllAccounts()) {
-        <AccountCard AccountId="@account.Id" 
-                     AccountName="@account.Name"/>
+        <AccountCard Account="@account" />
     }
 </div>
 

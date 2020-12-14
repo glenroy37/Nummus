@@ -1,5 +1,6 @@
 @using Nummus.Service
 @using Nummus.Data
+@using Nummus.Shared.Components
 @inject FormatService FormatService
 @inject IAccountService AccountService
 @inject IMatDialogService MatDialogService
@@ -7,7 +8,7 @@
 <div class="account-card">
     <div class="flex flex-space-between">
         <div>
-            <MatHeadline6 class="margin-1">@AccountName</MatHeadline6>
+            <MatHeadline6 class="margin-1">@Account.Name</MatHeadline6>
         </div>
         <div class="flex flex-align-center">
             <MatIconButton Class="force-white-text margin-right"
@@ -19,7 +20,7 @@
     <div class="flex flex-space-between">
         <div>
             <MatSubtitle2 Class="margin-left-1 margin-top-0">
-                @FormatService.FormatToLocalCurrency(AccountService.GetCurrentAccountBalance(AccountId))
+                @FormatService.FormatToLocalCurrency(AccountService.GetCurrentAccountBalance(Account.Id))
             </MatSubtitle2>
         </div>
         <div class="flex flex-align-center">
@@ -37,18 +38,12 @@
     @if (_showTransactions) {
         <MatDivider />
         @foreach (var bookingLine in _bookingLines) {
-            <div class="flex  flex-space-between">
-                <div>
-                    @bookingLine.BookingTime
-                </div>
-                <div>
-                    @bookingLine.BookingText
-                </div>
-                <div>
-                    @FormatService.FormatToLocalCurrency(bookingLine.Amount)
-                </div>
-            </div>
+            <BookingLineRow BookingLine="@bookingLine" />
         }
+        
+        <Paginator PageSize=@PageSize 
+                   ItemCount=@_transactionCount 
+                   OnPageChange=@LoadPage />
     }
 </div>
 
@@ -73,17 +68,18 @@
 
 @code {
     [Parameter]
-    public int AccountId { get; set; }
-    
-    [Parameter]
-    public string AccountName { get; set; }
+    public Account Account { get; set; }
 
-    private const int PageSize = 10;
-
+    private int PageSize = 10;
     private bool _addBookingLineDialogOpen;
     private bool _showTransactions;
     private int _currentTransactionsPage = 0;
-    private int _pagesCount = 0;
+    private int _transactionCount = 12;
+    private List<MatPageSizeOption> _matPageSizeOptions = new() {
+        new (10, "10"),
+        new (25, "25"),
+        new (100, "100")
+    };
     private BookingLine[] _bookingLines = {};
     private BookingLine _newBookingLine = new BookingLine();
 
@@ -101,19 +97,20 @@
     }
 
     void LoadPage(int pageNumber) {
-        _bookingLines = BookingLineService.GetBookingLinesPaged(AccountId, PageSize, pageNumber);
+        _bookingLines = BookingLineService.GetBookingLinesPaged(Account.Id, PageSize, pageNumber);
         _currentTransactionsPage = pageNumber;
     }
 
     void SaveBookingLine() {
-        BookingLineService.CreateBookingLine(AccountId, _newBookingLine);
+        BookingLineService.CreateBookingLine(Account.Id, _newBookingLine);
+        _transactionCount = BookingLineService.CountBookingLines(Account.Id);
         LoadPage(_currentTransactionsPage);
         CloseBookingLineDialog();
     }
 
-    protected override void OnInitialized() {
-        base.OnInitialized();
+    protected override void OnParametersSet() {
+        _transactionCount = BookingLineService.CountBookingLines(Account.Id);
         LoadPage(_currentTransactionsPage);
+        base.OnInitialized();
     }
-
 }

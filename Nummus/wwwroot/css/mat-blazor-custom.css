@@ -1,0 +1,44 @@
+
+.mat-paginator-container {
+    background-color: #232323;
+    color: #ffffff;
+}
+
+.mdc-select .mdc-select__anchor {
+    background-color: #2F2F2F !important;
+    color: #ffffff !important;
+}
+
+.mdc-select__selected-text {
+    color: #ffffff !important;
+}
+
+.mdc-list-item__ripple {
+    background-color: #2F2F2F !important;
+}
+
+.mdc-list-item__text {
+    color: #FFFFFF !important;
+    z-index: 1;
+}
+
+.mdc-list {
+    background-color: #2F2F2F !important;
+}
+
+.mdc-list-item {
+    color: #ffffff !important;
+}
+
+.mdc-drawer {
+    background-color: #232323;
+}
+
+.material-icons {
+    color: #ffffff;
+}
+
+.paginator-button {
+    display: block;
+    padding: 6px 0 0;
+}
