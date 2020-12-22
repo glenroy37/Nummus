@@ -38,7 +38,8 @@
     @if (_showTransactions) {
         <MatDivider />
         @foreach (var bookingLine in _bookingLines) {
-            <BookingLineRow BookingLine="@bookingLine" />
+            <BookingLineRow BookingLine="@bookingLine"
+                            OnBookingLineChange="@OnChildrenStateChange"/>
         }
         
         <Paginator PageSize=@PageSize 
@@ -106,6 +107,10 @@
         _transactionCount = BookingLineService.CountBookingLines(Account.Id);
         LoadPage(_currentTransactionsPage);
         CloseBookingLineDialog();
+    }
+
+    void OnChildrenStateChange() {
+        StateHasChanged();
     }
 
     protected override void OnParametersSet() {

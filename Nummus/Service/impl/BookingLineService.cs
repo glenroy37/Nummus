@@ -44,5 +44,12 @@ namespace Nummus.Service {
             _nummusDbContext.Add(bookingLine);
             _nummusDbContext.SaveChanges();
         }
+
+        public void SaveBookingLine(BookingLine bookingLine) {
+            if (bookingLine.AccountStatement == null) {
+                _nummusDbContext.BookingLines.Update(bookingLine);
+                _nummusDbContext.SaveChanges();
+            }
+        }
     }
 }

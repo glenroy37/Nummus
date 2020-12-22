@@ -1,18 +1,84 @@
 @using Nummus.Service
 @using Nummus.Data
 @inject FormatService FormatService
-<div class="flex  flex-space-between">
+@inject IBookingLineService BookingLineService
+<div class="flex flex-align-center">
     <div>
         @BookingLine.BookingTime.ToString("dd/MM/yy HH:mm")
     </div>
-    <div>
+    <div class="flex-grow padding-left-1">
         @BookingLine.BookingText
     </div>
     <div class="@(BookingLine.Amount < 0 ? "negative-colour" : "positive-colour")">
         @FormatService.FormatToLocalCurrency(BookingLine.Amount)
     </div>
+    <div>
+        <MatIconButton Class="force-white-text margin-right"
+                       OnClick="@OpenBookingLineDialog">
+            <MatIcon Icon="edit" />
+        </MatIconButton>
+    </div>
 </div>
+
+<MatDialog IsOpen="@_editBookingLineDialogOpen">
+    <MatDialogTitle Class="force-white-text">Edit Booking Line</MatDialogTitle>
+    <MatDialogContent>
+        <div class="margin-1">
+            <MatTextField @bind-Value="@_bookingText" Label="Booking line text" />
+        </div>
+        <div class="margin-1">
+            <MatTextField @bind-Value="@_amount" TValue="decimal" Label="Booking line amount" />
+        </div>
+        <div class="margin-1">
+            <MatDatePicker @bind-Value="@_bookingTime" EnableTime="true" />
+        </div>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@CloseBookingLineDialog">Cancel</MatButton>
+        <MatButton OnClick="@SaveBookingLine">Save</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
 @code {
-    [Parameter] 
+    [Parameter]
     public BookingLine BookingLine { get; set; }
+    
+    [Parameter]
+    public EventCallback OnBookingLineChange { get; set; }
+
+    private string _bookingText;
+    private decimal _amount;
+    private DateTime _bookingTime;
+
+    private bool _editBookingLineDialogOpen;
+    
+    
+    private void OpenBookingLineDialog() {
+        _editBookingLineDialogOpen = true;
+    }
+
+    private void CloseBookingLineDialog() {
+        ResetChanges();
+        _editBookingLineDialogOpen = false;
+    }
+
+    private void SaveBookingLine() {
+        BookingLine.BookingText = _bookingText;
+        BookingLine.Amount = _amount;
+        BookingLine.BookingTime = _bookingTime;
+        BookingLineService.SaveBookingLine(BookingLine);
+        OnBookingLineChange.InvokeAsync();
+        _editBookingLineDialogOpen = false;
+    }
+
+    protected override void OnParametersSet() {
+        ResetChanges();
+        base.OnParametersSet();
+    }
+
+    private void ResetChanges() {
+        _bookingText = BookingLine.BookingText;
+        _amount = BookingLine.Amount;
+        _bookingTime = BookingLine.BookingTime;
+    }
 }

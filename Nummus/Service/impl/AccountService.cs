@@ -35,7 +35,7 @@ namespace Nummus.Service {
                 .Where(bookingLine => bookingLine.Account.Id == accountId)
                 .Where(bookingLine => bookingLine.AccountStatement == null)
                 .Select(bookingLine => bookingLine.Amount)
-                .ToHashSet();
+                .ToList();
 
             return lastClosingSum + bookingsSinceLastStatement.Sum();
         }
