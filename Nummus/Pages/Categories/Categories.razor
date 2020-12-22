@@ -1,0 +1,76 @@
+@page "/categories"
+@using Nummus.Service
+@using Nummus.Data
+@using Nummus.Exception
+@using Nummus.Pages.Categories.Components <!-- Rider falsely marks this as unused import! -->
+@inject ICategoryService CategoryService
+<h1 class="margin-left-2">Categories</h1>
+
+<div class="flex flex-right margin-right-2">
+    <MatButton Raised="true" OnClick="@OpenCreateCategoryDialog">Create new category</MatButton>
+</div>
+
+<div class="margin-left-2 margin-right-2">
+@foreach(var category in CategoryService.GetAllCategories()) {
+    <CategoryRow Category="@category"
+                 OnDeleted="@OnCategoryDeleted"/>
+}
+</div>
+
+<MatDialog IsOpen="@_createCategoryDialogOpen">
+    <MatDialogTitle Class="force-white-text">New Category</MatDialogTitle>
+    <MatDialogContent>
+        <div class="margin-1">
+            <MatTextField @bind-Value="@_categoryName" Label="Category name"></MatTextField>
+        </div>
+        <div class="margin-1">
+            <MatSelect Label="Category Type" @bind-Value="@_categoryType">
+                <MatOption TValue="int" Value="0">Income</MatOption>
+                <MatOption TValue="int" Value="1">Expense</MatOption>
+                <MatOption TValue="int" Value="2">Carry</MatOption>
+            </MatSelect>
+        </div>
+        <div class="margin-1 force-white-text">
+            @_errorText
+        </div>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@CloseCreateCategoryDialog" Class="margin-1">Cancel</MatButton>
+        <MatButton OnClick="@CreateCategory">Create</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+
+@code {
+    private bool _createCategoryDialogOpen;
+    private string _errorText;
+    private string _categoryName;
+    private int _categoryType;
+
+    private void OpenCreateCategoryDialog() {
+        _createCategoryDialogOpen = true;
+    }
+
+    private void CloseCreateCategoryDialog() {
+        _categoryName = "";
+        _categoryType = 0;
+        _errorText = "";
+        _createCategoryDialogOpen = false;
+    }
+
+    private void OnCategoryDeleted() {
+        StateHasChanged();
+    }
+
+    private void CreateCategory() {
+        try {
+            CategoryService.CreateCategory(new Category {
+                Description = _categoryName,
+                CategoryType = (CategoryType) _categoryType
+            });
+            CloseCreateCategoryDialog();
+        } catch (NummusCategoryAlreadyExistsException e) {
+            _errorText = e.Message;
+        }
+    }
+}

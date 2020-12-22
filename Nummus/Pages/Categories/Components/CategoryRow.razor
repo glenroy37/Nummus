@@ -1,0 +1,83 @@
+@using Nummus.Data
+@using Nummus.Exception
+@using Nummus.Service
+@inject ICategoryService CategoryService;
+<div class="flex flex-align-center">
+    <div class="flex-grow">
+        @Category.Description
+    </div>
+    @if (CategoryService.IsDeletable(Category)) {
+        <div>
+            <MatIconButton Class="force-white-text margin-right"
+                           OnClick="@DeleteCategory">
+                <MatIcon Icon="delete"/>
+            </MatIconButton>
+        </div>
+    }
+    <div>
+        <MatIconButton Class="force-white-text margin-right"
+                       OnClick="@OpenEditCategoryDialog">
+            <MatIcon Icon="edit" />
+        </MatIconButton>
+    </div>
+</div>
+
+<MatDialog IsOpen="@_editCategoryDialogOpen">
+    <MatDialogTitle Class="force-white-text">Edit Category</MatDialogTitle>
+    <MatDialogContent>
+        <div class="margin-1">
+            <MatTextField @bind-Value="@_categoryName" Label="Category name"></MatTextField>
+        </div>
+        <div class="margin-1 force-white-text">
+            @_errorText
+        </div>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="@CloseEditCategoryDialog" Class="margin-1">Cancel</MatButton>
+        <MatButton OnClick="@EditCategory">Save</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@code {
+    [Parameter]
+    public Category Category { get; set; }
+
+    [Parameter]
+    public EventCallback OnDeleted { get; set; }
+    
+    private string _categoryName;
+    private string _errorText;
+    private bool _editCategoryDialogOpen;
+
+    private void EditCategory() {
+        var oldDescription = Category.Description;
+        try {
+            Category.Description = _categoryName;
+            CategoryService.UpdateCategory(Category);
+            CloseEditCategoryDialog();
+        } catch (NummusCategoryAlreadyExistsException e) {
+            Category.Description = oldDescription;
+            _errorText = e.Message;
+        }
+    }
+
+    private void CloseEditCategoryDialog() {
+        _categoryName = Category.Description;
+        _errorText = "";
+        _editCategoryDialogOpen = false;
+    }
+
+    private void DeleteCategory() {
+        CategoryService.DeleteCategory(Category);
+        OnDeleted.InvokeAsync();
+    }
+    
+    private void OpenEditCategoryDialog() {
+        _editCategoryDialogOpen = true;
+    }
+
+    protected override void OnParametersSet() {
+        _categoryName = Category.Description;
+        base.OnParametersSet();
+    }
+}

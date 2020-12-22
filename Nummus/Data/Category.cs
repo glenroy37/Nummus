@@ -5,7 +5,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace Nummus.Data {
-    public class Category {
+    public partial class Category {
+
         [Key]
         public int Id { get; set; }
 
@@ -18,7 +19,7 @@ namespace Nummus.Data {
 
     public enum CategoryType {
         INCOME,
-        SPENDING,
+        EXPENSE,
         CARRY
     }
 }
