@@ -1,0 +1,48 @@
+@using Nummus.Data
+@using Nummus.Service
+@using System.Collections.Immutable
+@inject ICategoryService CategoryService
+<div class="margin-1">
+    <MatTextField @bind-Value="@BookingLine.BookingText" Label="Booking line text" />
+</div>
+<div class="margin-1">
+    <MatTextField @bind-Value="@BookingLine.Amount" TValue="decimal" Label="Booking line amount" />
+</div>
+<div class="margin-1">
+    <MatSelectValue Label="Category Type"
+                    Class="force-white-text"
+                    TItem="Category"
+                    TValue="int"
+                    Items="@_categories"
+                    Value="@_selectedCategoryId"
+                    ValueChanged="@OnCategoryChanged"
+                    ValueSelector="@(it => it.Id)">
+        <ItemTemplate>@context?.Description</ItemTemplate>
+    </MatSelectValue>
+</div>
+<div class="margin-1">
+    <MatDatePicker @bind-Value="@BookingLine.BookingTime" EnableTime="true" />
+</div>
+
+
+@code {
+    [Parameter]
+    public BookingLine BookingLine { get; set; }
+
+    private IReadOnlyList<Category> _categories;
+    private int _selectedCategoryId;
+
+    private void OnCategoryChanged(int selectedCategoryId) {
+        _selectedCategoryId = selectedCategoryId;
+        BookingLine.Category = _categories
+            .FirstOrDefault(it => it.Id == selectedCategoryId);
+    }
+    
+    protected override void OnParametersSet() {
+        var categoryList = new List<Category>();
+        categoryList.AddRange(CategoryService.GetAllCategories());
+        _categories = categoryList.AsReadOnly();
+        _selectedCategoryId = BookingLine.Category?.Id ?? 0;
+        base.OnParametersSet();
+    }
+}

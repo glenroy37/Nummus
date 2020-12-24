@@ -1,24 +1,37 @@
 
 .mat-paginator-container {
     background-color: #232323;
-    color: #ffffff;
+    color: white;
 }
 
 .mdc-select .mdc-select__anchor {
     background-color: #2F2F2F !important;
-    color: #ffffff !important;
+    color: white !important;
 }
 
 .mdc-select__selected-text {
-    color: #ffffff !important;
+    color: white !important;
 }
 
 .mdc-list-item__ripple {
     background-color: #2F2F2F !important;
 }
 
+.mdc-text-field__ripple {
+    background-color: #2F2F2F !important;
+}
+
+.mdc-select:not(.mdc-select--disabled) .mdc-select__dropdown-icon {
+    fill: white !important;
+}
+
+.mdc-text-field__input {
+    z-index: 1;
+    color: white !important;
+}
+
 .mdc-list-item__text {
-    color: #FFFFFF !important;
+    color: white !important;
     z-index: 1;
 }
 
@@ -27,7 +40,7 @@
 }
 
 .mdc-list-item {
-    color: #ffffff !important;
+    color: white !important;
 }
 
 .mdc-drawer {
@@ -35,7 +48,11 @@
 }
 
 .material-icons {
-    color: #ffffff;
+    color: white;
+}
+
+.mdc-floating-label {
+    color: white !important;
 }
 
 .paginator-button {

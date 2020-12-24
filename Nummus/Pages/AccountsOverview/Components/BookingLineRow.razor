@@ -23,15 +23,7 @@
 <MatDialog IsOpen="@_editBookingLineDialogOpen">
     <MatDialogTitle Class="force-white-text">Edit Booking Line</MatDialogTitle>
     <MatDialogContent>
-        <div class="margin-1">
-            <MatTextField @bind-Value="@_bookingText" Label="Booking line text" />
-        </div>
-        <div class="margin-1">
-            <MatTextField @bind-Value="@_amount" TValue="decimal" Label="Booking line amount" />
-        </div>
-        <div class="margin-1">
-            <MatDatePicker @bind-Value="@_bookingTime" EnableTime="true" />
-        </div>
+        <BookingLineForm BookingLine="_editedBookingLine" />
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@CloseBookingLineDialog">Cancel</MatButton>
@@ -42,13 +34,11 @@
 @code {
     [Parameter]
     public BookingLine BookingLine { get; set; }
-    
+
     [Parameter]
     public EventCallback OnBookingLineChange { get; set; }
 
-    private string _bookingText;
-    private decimal _amount;
-    private DateTime _bookingTime;
+    private BookingLine _editedBookingLine = new();
 
     private bool _editBookingLineDialogOpen;
     
@@ -63,9 +53,10 @@
     }
 
     private void SaveBookingLine() {
-        BookingLine.BookingText = _bookingText;
-        BookingLine.Amount = _amount;
-        BookingLine.BookingTime = _bookingTime;
+        BookingLine.BookingText = _editedBookingLine.BookingText;
+        BookingLine.Amount = _editedBookingLine.Amount;
+        BookingLine.BookingTime = _editedBookingLine.BookingTime;
+        BookingLine.Category = _editedBookingLine.Category;
         BookingLineService.SaveBookingLine(BookingLine);
         OnBookingLineChange.InvokeAsync();
         _editBookingLineDialogOpen = false;
@@ -77,8 +68,9 @@
     }
 
     private void ResetChanges() {
-        _bookingText = BookingLine.BookingText;
-        _amount = BookingLine.Amount;
-        _bookingTime = BookingLine.BookingTime;
+        _editedBookingLine.BookingText = BookingLine.BookingText;
+        _editedBookingLine.Amount = BookingLine.Amount;
+        _editedBookingLine.BookingTime = BookingLine.BookingTime;
+        _editedBookingLine.Category = BookingLine.Category;
     }
 }

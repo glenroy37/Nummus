@@ -51,15 +51,7 @@
 <MatDialog IsOpen="@_addBookingLineDialogOpen">
     <MatDialogTitle Class="force-white-text">Add Booking Line</MatDialogTitle>
     <MatDialogContent>
-        <div class="margin-1">
-            <MatTextField @bind-Value="@_newBookingLine.BookingText" Label="Booking line text" />
-        </div>
-        <div class="margin-1">
-            <MatTextField @bind-Value="@_newBookingLine.Amount" TValue="decimal" Label="Booking line amount" />
-        </div>
-        <div class="margin-1">
-            <MatDatePicker @bind-Value="@_newBookingLine.BookingTime" EnableTime="true" />
-        </div>
+        <BookingLineForm BookingLine="@_newBookingLine" />
     </MatDialogContent>
     <MatDialogActions>
         <MatButton OnClick="@CloseBookingLineDialog">Cancel</MatButton>
