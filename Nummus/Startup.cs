@@ -44,6 +44,7 @@ namespace Nummus {
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IBookingLineService, BookingLineService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IAccountStatementService, AccountStatementService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

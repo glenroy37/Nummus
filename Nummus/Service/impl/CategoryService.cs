@@ -6,21 +6,27 @@ using Nummus.Exception;
 namespace Nummus.Service {
     public class CategoryService : ICategoryService {
         private readonly NummusDbContext _nummusDbContext;
+        private readonly NummusUserService _nummusUserService;
 
-        public CategoryService(NummusDbContext nummusDbContext) {
+        public CategoryService(NummusDbContext nummusDbContext, NummusUserService nummusUserService) {
             _nummusDbContext = nummusDbContext;
+            _nummusUserService = nummusUserService;
         }
         
-        public IEnumerable<Category> GetAllCategories() {
-            return _nummusDbContext.Categories.ToHashSet();
+        public Category[] GetAllCategories() {
+            return _nummusDbContext.Categories
+                .Where(it => it.NummusUser.Id == _nummusUserService.CurrentNummusUser.Id)
+                .ToArray();
         }
 
         public void CreateCategory(Category category) {
             if (_nummusDbContext.Categories
+                .Where(it => it.NummusUser.Id == _nummusUserService.CurrentNummusUser.Id)
                 .Any(it => it.Description == category.Description)) {
                 throw new NummusCategoryAlreadyExistsException();
             }
-            
+
+            category.NummusUser = _nummusUserService.CurrentNummusUser;
             _nummusDbContext.Categories.Add(category);
             _nummusDbContext.SaveChanges();
         }

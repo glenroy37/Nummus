@@ -31,10 +31,9 @@
                     <MatDrawerContainer Style="width: 100vw; height: 100vh;">
                         <MatDrawer id="mobile-drawer" @bind-Opened="@_menuOpened" Mode="@_matDrawerMode">
                             <MatNavItem Href="/">Accounts</MatNavItem>
-                            <MatNavItem Href="/">Account Statements</MatNavItem>
-                            <MatNavItem Href="/">Budget Reports</MatNavItem>
+                            <MatNavItem Href="/account-statements">Account Statements</MatNavItem>
+                            <MatNavItem Href="/budget-reports">Budget Reports</MatNavItem>
                             <MatNavItem Href="/categories">Categories</MatNavItem>
-                            <MatNavItem Href="/">Settings</MatNavItem>
                         </MatDrawer>
                         <MatDrawerContent>
                             <div class="content px-4">

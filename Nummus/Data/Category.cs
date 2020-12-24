@@ -15,6 +15,9 @@ namespace Nummus.Data {
 
         [Required]
         public CategoryType CategoryType { get; set; }
+        
+        [Required]
+        public NummusUser NummusUser { get; set; }
     }
 
     public enum CategoryType {
