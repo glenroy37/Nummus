@@ -33,6 +33,7 @@ namespace Nummus.Service {
 
         public void UpdateCategory(Category category) {
             var existingCategory = _nummusDbContext.Categories
+                .Where(it => it.NummusUser == _nummusUserService.CurrentNummusUser)
                 .FirstOrDefault(it => it.Description == category.Description);
 
             if (existingCategory != null && existingCategory.Id != category.Id) {
