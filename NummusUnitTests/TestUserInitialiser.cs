@@ -14,5 +14,14 @@ namespace NummusUnitTests {
             nummusDbContext.Users.Add(new IdentityUser(userEmail));
             return new NummusUserService(mockHttpContextAccessor.Object, nummusDbContext);
         }
+
+        public static NummusUser AddSecondUser(NummusDbContext nummusDbContext) {
+            const string secondUserEmail = "second@test.user";
+            nummusDbContext.Users.Add(new IdentityUser(secondUserEmail));
+            var nummusUser = new NummusUser(secondUserEmail);
+            nummusDbContext.NummusUsers.Add(nummusUser);
+            nummusDbContext.SaveChanges();
+            return nummusUser;
+        }
     }
 }
