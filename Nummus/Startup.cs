@@ -27,7 +27,7 @@ namespace Nummus {
             services.AddDbContext<NummusDbContext>(options =>
                 options.UseMySql(
                     _configuration.GetConnectionString("DefaultConnection"),
-                    new MariaDbServerVersion(new Version(10, 3))));
+                    new MariaDbServerVersion(new Version(10, 5))));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<NummusDbContext>();
             services.AddRazorPages();
