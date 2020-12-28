@@ -1,6 +1,22 @@
 @page "/account-statements"
-<h3>AccountStatements</h3>
+@using Nummus.Service
+@using Nummus.Data
+@inject IAccountStatementService AccountStatementService
+@inject FormatService FormatService
+<h1 class="margin-left-2">Account Statements</h1>
+<div class="margin-left-2">
+    @foreach (var generatable in AccountStatementService.GeneretableStatements()) {
+        <MatButton OnClick="@(() => { AccountStatementService.GenerateStatement(generatable.Item1, generatable.Item2); })">
+            Generate @generatable.Item1 / @generatable.Item2
+        </MatButton>
+    }
+</div>
 
-@code {
-    
-}
+<div class="margin-left-2">
+    <h3>Already generated statements this year:</h3>
+    @foreach (var statements in AccountStatementService.GetAllStatementsOfYear(DateTime.Now.Year)) {
+        <p>
+            @statements.Account.Name @statements.BookingDate.Month / @statements.BookingDate.Year: @FormatService.FormatToLocalCurrency(statements.ClosingSum)
+        </p>
+    }
+</div>

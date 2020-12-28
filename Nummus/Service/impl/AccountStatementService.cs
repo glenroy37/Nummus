@@ -19,10 +19,15 @@ namespace Nummus.Service {
         public (int, int)[] GeneretableStatements() {
             var now = DateTime.Now;
 
+            if (!_nummusDbContext.Accounts
+                .Any(it => it.NummusUser == _nummusUserService.CurrentNummusUser)) {
+                return Array.Empty<(int, int)>();
+            }
+            
             if (!_nummusDbContext.AccountStatements
                 .Any(it => it.Account.NummusUser == _nummusUserService.CurrentNummusUser)) {
                 return new (int, int)[] {
-                    new (now.Month, now.Year)
+                    new (now.Month - 1, now.Year)
                 };
             }
 
