@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nummus.Data;
+using Nummus.Exception;
 
 namespace Nummus.Service {
     public class AccountStatementService : IAccountStatementService {
@@ -16,51 +17,69 @@ namespace Nummus.Service {
             _nummusUserService = nummusUserService;
         }
         
-        public (int, int)[] GeneretableStatements() {
+        public DateTime? GeneretableStatement() {
             var now = DateTime.Now;
 
             if (!_nummusDbContext.Accounts
                 .Any(it => it.NummusUser == _nummusUserService.CurrentNummusUser)) {
-                return Array.Empty<(int, int)>();
+                return null;
             }
             
             if (!_nummusDbContext.AccountStatements
                 .Any(it => it.Account.NummusUser == _nummusUserService.CurrentNummusUser)) {
-                return new (int, int)[] {
-                    new (now.Month - 1, now.Year)
-                };
+                return now.AddMonths(-1);
             }
 
-            var lastAccountStatementDate = _nummusDbContext.AccountStatements
+            var nextPossibleStatement = _nummusDbContext.AccountStatements
                 .Where(it => it.Account.NummusUser == _nummusUserService.CurrentNummusUser)
                 .OrderByDescending(it => it.BookingDate)
                 .Select(it => it.BookingDate)
-                .FirstOrDefault();
+                .First()
+                .AddMonths(1);
 
-            var tuples = new HashSet<(int, int)>();
-            for (var year = lastAccountStatementDate.Year; year <= now.Year; year++) {
-                for (var month = (year == lastAccountStatementDate.Year) ? lastAccountStatementDate.Month + 1 : 1; 
-                    month <= 12; month++) {
-                    tuples.Add(new (month, year));
-                }
+            if (nextPossibleStatement.Month == now.Month && nextPossibleStatement.Year == now.Year) {
+                return null;
             }
-            return tuples.ToArray();
+
+            return nextPossibleStatement;
         }
 
-        public void GenerateStatement(int month, int year) {
+        public void GenerateStatement() {
+            var generatableStatementDateNullable = GeneretableStatement();
+
+            if (generatableStatementDateNullable == null) {
+                return;
+            }
+
+            var generatableStatementDate = generatableStatementDateNullable.Value;
+
             foreach (var account in _accountService.GetAllAccounts()) {
                 var accountStatement = new AccountStatement {
                     Account = account,
-                    BookingDate =  new DateTime(year, month, 1).AddMonths(1).AddDays(-1)
+                    BookingDate = generatableStatementDate
                 };
 
-                var addedBookingLines = new List<BookingLine>();
+                var lastAccountStatement = _nummusDbContext.AccountStatements
+                    .Where(it => it.Account == account)
+                    .OrderByDescending(it => it.BookingDate)
+                    .FirstOrDefault();
+
                 var closingSum = 0m;
+                if (lastAccountStatement != null) {
+                    var expectedLastStatementDate = generatableStatementDate.AddMonths(-1);
+                    if (lastAccountStatement.BookingDate.Month != expectedLastStatementDate.Month ||
+                        lastAccountStatement.BookingDate.Year != expectedLastStatementDate.Year) {
+                        throw new NummusInBetweenAccountStatementMissingException();
+                    }
+                    closingSum = lastAccountStatement.ClosingSum;
+                }
+
+                var addedBookingLines = new List<BookingLine>();
                 foreach (var bookingLine in account.BookingLines
                     .Where(it => it.AccountStatement == null)
                     .Where(it => it.Account.NummusUser == _nummusUserService.CurrentNummusUser)
-                    .Where(it => it.BookingTime.Month == month)
-                    .Where(it => it.BookingTime.Year == year)) {
+                    .Where(it => it.BookingTime.Month == generatableStatementDate.Month)
+                    .Where(it => it.BookingTime.Year == generatableStatementDate.Year)) {
                     bookingLine.AccountStatement = accountStatement;
                     addedBookingLines.Add(bookingLine);
                     closingSum += bookingLine.Amount;
@@ -73,9 +92,8 @@ namespace Nummus.Service {
             _nummusDbContext.SaveChanges();
         }
 
-        public AccountStatement[] GetAllStatementsOfYear(int year) {
+        public AccountStatement[] GetAllStatements() {
             return _nummusDbContext.AccountStatements
-                .Where(it => it.BookingDate.Year == year)
                 .Where(it => it.Account.NummusUser == _nummusUserService.CurrentNummusUser)
                 .ToArray();
         }

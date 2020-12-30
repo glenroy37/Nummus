@@ -3,8 +3,8 @@ using Nummus.Data;
 
 namespace Nummus.Service {
     public interface IAccountStatementService {
-        public (int, int)[] GeneretableStatements();
-        public void GenerateStatement(int month, int year);
-        public AccountStatement[] GetAllStatementsOfYear(int year);
+        public DateTime? GeneretableStatement();
+        public void GenerateStatement();
+        public AccountStatement[] GetAllStatements();
     }
 }

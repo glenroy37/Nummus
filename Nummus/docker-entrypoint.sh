@@ -1,3 +1,3 @@
 #!/bin/bash
 envsubst </app/appsettings.Docker.template.json >/app/appsettings.Docker.json
-dotnet /app/Nummus.dll
+ASPNETCORE_ENVIRONMENT=Docker dotnet /app/Nummus.dll

@@ -7,8 +7,6 @@ services:
       MYSQL_DATABASE: nummus
     networks:
       - nummus_net
-    volumes:
-      - ./MigrationsSql:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-uroot", "-proot"]
       interval: 15s
