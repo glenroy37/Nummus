@@ -35,6 +35,11 @@
     z-index: 1;
 }
 
+.mat-drawer-app-content {
+    height: 94% !important;
+    overflow-y: scroll !important;
+}
+
 .mdc-list {
     background-color: #2F2F2F !important;
 }
