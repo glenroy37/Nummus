@@ -39,7 +39,8 @@
         <MatDivider />
         @foreach (var bookingLine in _bookingLines) {
             <BookingLineRow BookingLine="@bookingLine"
-                            OnBookingLineChange="@OnChildrenStateChange"/>
+                            OnBookingLineChange="@OnChildrenStateChange"
+                            OnBookingLineDeleted="@OnBookingLineDeleted" />
         }
         
         <Paginator PageSize=@PageSize 
@@ -103,6 +104,10 @@
 
     void OnChildrenStateChange() {
         StateHasChanged();
+    }
+
+    void OnBookingLineDeleted() {
+        LoadPage(_currentTransactionsPage);
     }
 
     protected override void OnParametersSet() {

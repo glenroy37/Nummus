@@ -9,14 +9,24 @@
     <div class="flex-grow padding-left-1">
         @BookingLine.BookingText
     </div>
+
+    @if (BookingLine.AccountStatement == null) {
+        <div>
+            <MatIconButton Class="force-white-text margin-right"
+                           OnClick="@OpenDeleteDialog">
+                <MatIcon Icon="delete"/>
+            </MatIconButton>
+        </div>
+        <div>
+            <MatIconButton Class="force-white-text margin-right"
+                           OnClick="@OpenBookingLineDialog">
+                <MatIcon Icon="edit"/>
+            </MatIconButton>
+        </div>
+    }
+    
     <div class="@(BookingLine.Amount < 0 ? "negative-colour" : "positive-colour")">
         @FormatService.FormatToLocalCurrency(BookingLine.Amount)
-    </div>
-    <div>
-        <MatIconButton Class="force-white-text margin-right"
-                       OnClick="@OpenBookingLineDialog">
-            <MatIcon Icon="edit" />
-        </MatIconButton>
     </div>
 </div>
 
@@ -31,18 +41,28 @@
     </MatDialogActions>
 </MatDialog>
 
+<MatDialog IsOpen="@_deleteBookingLineDialogOpen">
+    <MatDialogTitle Class="force-white-text">Do you really want to delete that booking line?</MatDialogTitle>
+        <MatDialogActions>
+            <MatButton OnClick="@CloseDeleteDialog">No</MatButton>
+            <MatButton OnClick="@DeleteBookingLine">Yes</MatButton>
+        </MatDialogActions>
+</MatDialog>
+
 @code {
     [Parameter]
     public BookingLine BookingLine { get; set; }
 
     [Parameter]
     public EventCallback OnBookingLineChange { get; set; }
+    
+    [Parameter]
+    public EventCallback OnBookingLineDeleted { get; set; }
 
     private BookingLine _editedBookingLine = new();
-
     private bool _editBookingLineDialogOpen;
-    
-    
+    private bool _deleteBookingLineDialogOpen;
+
     private void OpenBookingLineDialog() {
         _editBookingLineDialogOpen = true;
     }
@@ -60,6 +80,20 @@
         BookingLineService.SaveBookingLine(BookingLine);
         OnBookingLineChange.InvokeAsync();
         _editBookingLineDialogOpen = false;
+    }
+
+    private void OpenDeleteDialog() {
+        _deleteBookingLineDialogOpen = true;
+    }
+
+    private void CloseDeleteDialog() {
+        _deleteBookingLineDialogOpen = false;
+    }
+    
+    private void DeleteBookingLine() {
+        _deleteBookingLineDialogOpen = false;
+        BookingLineService.DeleteBookingLine(BookingLine);
+        OnBookingLineDeleted.InvokeAsync();
     }
 
     protected override void OnParametersSet() {

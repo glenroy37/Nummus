@@ -6,5 +6,6 @@ namespace Nummus.Service {
         public BookingLine[] GetBookingLinesPaged(int accountId, int size, int page);
         public int CountBookingLines(int accountId);
         public void SaveBookingLine(BookingLine bookingLine);
+        public void DeleteBookingLine(BookingLine bookingLine);
     }
 }

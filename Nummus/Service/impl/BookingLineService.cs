@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Nummus.Data;
 using Nummus.Exception;
 
@@ -26,6 +27,7 @@ namespace Nummus.Service {
                 .OrderByDescending(it => it.BookingTime)
                 .Skip(page * size)
                 .Take(size)
+                .Include("AccountStatement")
                 .ToArray();
         }
 
@@ -46,10 +48,19 @@ namespace Nummus.Service {
         }
 
         public void SaveBookingLine(BookingLine bookingLine) {
-            if (bookingLine.AccountStatement == null) {
-                _nummusDbContext.BookingLines.Update(bookingLine);
-                _nummusDbContext.SaveChanges();
+            if (bookingLine.AccountStatement != null) {
+                throw new NummusTriedToModifyUnmodifiableBookingLineException();
             }
+            _nummusDbContext.BookingLines.Update(bookingLine);
+            _nummusDbContext.SaveChanges();
+        }
+
+        public void DeleteBookingLine(BookingLine bookingLine) {
+            if (bookingLine.AccountStatement != null) {
+                throw new NummusTriedToModifyUnmodifiableBookingLineException();
+            }
+            _nummusDbContext.BookingLines.Remove(bookingLine);
+            _nummusDbContext.SaveChanges();
         }
     }
 }
