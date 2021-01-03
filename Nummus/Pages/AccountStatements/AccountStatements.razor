@@ -37,7 +37,7 @@
 
     private void OnMonthChange(DateTime newMonth) {
         _currentMonth = newMonth;
-        _currentAccountStatements = AccountStatementService.GetStatementsOf(_currentMonth.Month, _currentMonth.Year);
+        _currentAccountStatements = AccountStatementService.GetStatementsOf(_currentMonth);
     }
     
     protected override void OnInitialized() {

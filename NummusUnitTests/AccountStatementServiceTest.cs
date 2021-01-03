@@ -29,12 +29,13 @@ namespace NummusUnitTests {
 
         [Test]
         public void TestGeneratableStatementsNoPreviousStatements() {
-            CreateStatementOtherUser();
+            CreateStatementOtherUser(DateTime.Now);
             CreateAccount();
             var generatableStatement = _accountStatementService.GeneretableStatement();
             Assert.NotNull(generatableStatement);
-            Assert.AreEqual(DateTime.Now.Month - 1, generatableStatement.Value.Month);
-            Assert.AreEqual(DateTime.Now.Year, generatableStatement.Value.Year);
+            var expectedDate = DateTime.Now.AddMonths(-1);
+            Assert.AreEqual(expectedDate.Month, generatableStatement.Value.Month);
+            Assert.AreEqual(expectedDate.Year, generatableStatement.Value.Year);
         }
 
         [Test]
@@ -51,8 +52,9 @@ namespace NummusUnitTests {
             CreateStatement(DateTime.Now.AddMonths(-2), account);
             var generatableStatement = _accountStatementService.GeneretableStatement();
             Assert.NotNull(generatableStatement);
-            Assert.AreEqual(DateTime.Now.Month - 1, generatableStatement.Value.Month);
-            Assert.AreEqual(DateTime.Now.Year, generatableStatement.Value.Year);
+            var expectedDate = DateTime.Now.AddMonths(-1);
+            Assert.AreEqual(expectedDate.Month, generatableStatement.Value.Month);
+            Assert.AreEqual(expectedDate.Year, generatableStatement.Value.Year);
         }
 
         [Test]
@@ -75,8 +77,9 @@ namespace NummusUnitTests {
             _accountStatementService.GenerateStatement();
             var statement = _nummusDbContext.AccountStatements.First();
             Assert.AreEqual(0m, statement.ClosingSum);
-            Assert.AreEqual(DateTime.Now.Month - 1, statement.BookingDate.Month);
-            Assert.AreEqual(DateTime.Now.Year, statement.BookingDate.Year);
+            var expectedDate = DateTime.Now.AddMonths(-1);
+            Assert.AreEqual(expectedDate.Month, statement.BookingDate.Month);
+            Assert.AreEqual(expectedDate.Year, statement.BookingDate.Year);
             Assert.AreEqual(account.Name, statement.Account.Name);
         }
 
@@ -95,13 +98,47 @@ namespace NummusUnitTests {
             Assert.AreEqual(bookingLineLastMonth.Id, statement.BookingLines.First().Id);
         }
 
-        private void CreateStatementOtherUser() {
+        [Test]
+        public void TestGetStatementOfMonth() {
+            var currentUserAccount = CreateAccount();
+            var somePreviousMonth = DateTime.Now.AddMonths(-14);
+            var someOtherPreviousMonth = DateTime.Now.AddMonths(-12);
+            
+            var firstDateStatement = CreateStatement(somePreviousMonth, currentUserAccount);
+            var secondDateStatement = CreateStatement(someOtherPreviousMonth, currentUserAccount);
+            CreateStatementOtherUser(somePreviousMonth);
+
+            var statementsOfPreviousMonth = _accountStatementService.GetStatementsOf(somePreviousMonth);
+            Assert.AreEqual(1, statementsOfPreviousMonth.Length);
+            Assert.AreEqual(firstDateStatement, statementsOfPreviousMonth[0]);
+
+            var statementOfSomeOtherMonth = _accountStatementService.GetStatementsOf(someOtherPreviousMonth);
+            Assert.AreEqual(1, statementOfSomeOtherMonth.Length);
+            Assert.AreEqual(secondDateStatement, statementOfSomeOtherMonth[0]);
+        }
+
+        [Test]
+        public void TestGetLatestStatement() {
+            var currentUserAccount = CreateAccount();
+            var lastMonth = DateTime.Now.AddMonths(-1);
+            var twoMonthsAgo = DateTime.Now.AddMonths(-2);
+
+            var lastMonthsStatements = CreateStatement(lastMonth, currentUserAccount);
+            CreateStatement(twoMonthsAgo, currentUserAccount);
+            CreateStatementOtherUser(lastMonth);
+
+            var latestStatement = _accountStatementService.GetLatestStatements();
+            Assert.AreEqual(1, latestStatement.Length);
+            Assert.AreEqual(lastMonthsStatements, latestStatement[0]);
+        }
+
+        private void CreateStatementOtherUser(DateTime bookingDate) {
             var account = new Account("test-someone-else",
                 TestUserInitialiser.AddSecondUser(_nummusDbContext));
             _nummusDbContext.Accounts.Add(account);
             var accountStatement = new AccountStatement {
                 Account = account,
-                BookingDate = DateTime.Now,
+                BookingDate = bookingDate,
             };
             _nummusDbContext.AccountStatements.Add(accountStatement);
             _nummusDbContext.SaveChanges();

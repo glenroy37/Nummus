@@ -92,12 +92,6 @@ namespace Nummus.Service {
             _nummusDbContext.SaveChanges();
         }
 
-        public AccountStatement[] GetAllStatements() {
-            return _nummusDbContext.AccountStatements
-                .Where(it => it.Account.NummusUser == _nummusUserService.CurrentNummusUser)
-                .ToArray();
-        }
-
         public AccountStatement[] GetLatestStatements() {
             var latestStatementDate = _nummusDbContext.AccountStatements
                 .Where(it => it.Account.NummusUser == _nummusUserService.CurrentNummusUser)
@@ -105,15 +99,15 @@ namespace Nummus.Service {
                 .FirstOrDefault();
             
             return latestStatementDate != null ?
-                GetStatementsOf(latestStatementDate.BookingDate.Month, latestStatementDate.BookingDate.Year) :
+                GetStatementsOf(latestStatementDate.BookingDate) :
                 Array.Empty<AccountStatement>();
         }
 
-        public AccountStatement[] GetStatementsOf(int month, int year) {
+        public AccountStatement[] GetStatementsOf(DateTime month) {
             return _nummusDbContext.AccountStatements
                 .Where(it => it.Account.NummusUser == _nummusUserService.CurrentNummusUser)
-                .Where(it => it.BookingDate.Month == month)
-                .Where(it => it.BookingDate.Year == year)
+                .Where(it => it.BookingDate.Month == month.Month)
+                .Where(it => it.BookingDate.Year == month.Year)
                 .ToArray();
         }
     }
