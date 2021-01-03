@@ -1,6 +1,37 @@
 @page "/budget-reports"
-<h3>BudgetReports - WIP</h3>
+@using Nummus.Service
+@using Nummus.Data
+@using Nummus.Shared.Components
+@inject IAccountStatementService AccountStatementService
+<h1 class="margin-left-2">Budget Reports</h1>
+
+@if (_currentReportStatements.Length == 0) {
+    <p class="margin-left-2">
+        It seems you don't have any account statements. Therefore we can't show you any budget reports.
+    </p>
+} else {
+    <div class="margin-left-2">
+        <div class="flex flex-grow">
+            <MonthPaginator 
+                CurrentMonth="@_currentMonth"
+                OnMonthChange="@OnMonthChange"/>
+        </div>
+    </div>
+}
   
 @code {
+    private AccountStatement[] _currentReportStatements = Array.Empty<AccountStatement>();
+    private DateTime _currentMonth;
+
+    private void OnMonthChange(DateTime newMonth) {
+        _currentMonth = newMonth;
+    }
     
+    protected override void OnInitialized() {
+        _currentReportStatements = AccountStatementService.GetLatestStatements();
+        if (_currentReportStatements.Length != 0) {
+            _currentMonth = _currentReportStatements[0].BookingDate;
+        }
+        base.OnInitialized();
+    }
 }

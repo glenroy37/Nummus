@@ -97,5 +97,24 @@ namespace Nummus.Service {
                 .Where(it => it.Account.NummusUser == _nummusUserService.CurrentNummusUser)
                 .ToArray();
         }
+
+        public AccountStatement[] GetLatestStatements() {
+            var latestStatementDate = _nummusDbContext.AccountStatements
+                .Where(it => it.Account.NummusUser == _nummusUserService.CurrentNummusUser)
+                .OrderByDescending(it => it.BookingDate)
+                .FirstOrDefault();
+            
+            return latestStatementDate != null ?
+                GetStatementsOf(latestStatementDate.BookingDate.Month, latestStatementDate.BookingDate.Year) :
+                Array.Empty<AccountStatement>();
+        }
+
+        public AccountStatement[] GetStatementsOf(int month, int year) {
+            return _nummusDbContext.AccountStatements
+                .Where(it => it.Account.NummusUser == _nummusUserService.CurrentNummusUser)
+                .Where(it => it.BookingDate.Month == month)
+                .Where(it => it.BookingDate.Year == year)
+                .ToArray();
+        }
     }
 }

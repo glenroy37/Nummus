@@ -6,5 +6,7 @@ namespace Nummus.Service {
         public DateTime? GeneretableStatement();
         public void GenerateStatement();
         public AccountStatement[] GetAllStatements();
+        public AccountStatement[] GetLatestStatements();
+        public AccountStatement[] GetStatementsOf(int month, int year);
     }
 }

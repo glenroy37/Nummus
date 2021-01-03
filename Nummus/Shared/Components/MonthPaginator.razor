@@ -1,0 +1,33 @@
+<div class="flex flex-right flex-align-center">
+    <div>
+        <MatIconButton OnClick="@PreviousMonth" Class="paginator-button">
+            <MatIcon Icon="keyboard_arrow_left" />
+        </MatIconButton>
+    </div>
+    <div>
+        @CurrentMonth.Month / @CurrentMonth.Year
+    </div>
+    <div>
+        <MatIconButton OnClick="@NextMonth" Class="paginator-button">
+            <MatIcon Icon="keyboard_arrow_right" />
+        </MatIconButton>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<DateTime> OnMonthChange { get; set; }
+
+    [Parameter]
+    public DateTime CurrentMonth { get; set; }
+
+    private void NextMonth() {
+        CurrentMonth = CurrentMonth.AddMonths(1);
+        OnMonthChange.InvokeAsync(CurrentMonth);
+    }
+
+    private void PreviousMonth() {
+        CurrentMonth = CurrentMonth.AddMonths(-1);
+        OnMonthChange.InvokeAsync(CurrentMonth);
+    }
+}
