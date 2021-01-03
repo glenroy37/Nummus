@@ -1,5 +1,7 @@
 @page "/account-statements"
 @using Nummus.Service
+@using Nummus.Data
+@using Nummus.Shared.Components
 @inject IAccountStatementService AccountStatementService
 @inject FormatService FormatService
 <h1 class="margin-left-2">Account Statements</h1>
@@ -11,19 +13,38 @@
         </MatButton>
     } else {
         <p>
-            There are no statements generatable as of now.
+            There are no new statements generatable.
         </p>
     }
 </div>
 
 <div class="margin-left-2">
-    @{ var accountStatements = AccountStatementService.GetAllStatements(); }
-    @if (accountStatements.Length > 0) {
-        <h3>Already Generated Statments:</h3>
+    <MonthPaginator CurrentMonth = "@_currentMonth"
+                    OnMonthChange = "@OnMonthChange"/>
+    @if (_currentAccountStatements.Length == 0) {
+        <p>There are no statements for the selected month.</p>
     }
-    @foreach (var statements in accountStatements) {
+    @foreach (var statements in _currentAccountStatements) {
         <p>
-            @statements.Account.Name @statements.BookingDate.Month / @statements.BookingDate.Year: @FormatService.FormatToLocalCurrency(statements.ClosingSum)
+            @statements.Account.Name: @FormatService.FormatToLocalCurrency(statements.ClosingSum)
         </p>
     }
 </div>
+
+@code {
+    private AccountStatement[] _currentAccountStatements = Array.Empty<AccountStatement>();
+    private DateTime _currentMonth;
+
+    private void OnMonthChange(DateTime newMonth) {
+        _currentMonth = newMonth;
+        _currentAccountStatements = AccountStatementService.GetStatementsOf(_currentMonth.Month, _currentMonth.Year);
+    }
+    
+    protected override void OnInitialized() {
+        _currentAccountStatements = AccountStatementService.GetLatestStatements();
+        if (_currentAccountStatements.Length != 0) {
+            _currentMonth = _currentAccountStatements[0].BookingDate;
+        }
+        base.OnInitialized();
+    }
+}
