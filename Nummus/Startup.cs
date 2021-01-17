@@ -25,9 +25,7 @@ namespace Nummus {
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services) {
             services.AddDbContext<NummusDbContext>(options =>
-                options.UseMySql(
-                    _configuration.GetConnectionString("DefaultConnection"),
-                    new MariaDbServerVersion(new Version(10, 5))));
+                options.UseNpgsql(_configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<NummusDbContext>();
             services.AddRazorPages();
