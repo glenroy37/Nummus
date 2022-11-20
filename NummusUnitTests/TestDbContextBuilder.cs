@@ -9,8 +9,7 @@ namespace NummusUnitTests {
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .EnableSensitiveDataLogging()
                 .Options;
-            var context = new NummusDbContext(options);
-            return context;
+            return new NummusDbContext(options);
         }
     }
 }

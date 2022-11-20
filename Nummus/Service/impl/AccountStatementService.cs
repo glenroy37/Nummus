@@ -73,21 +73,20 @@ namespace Nummus.Service {
                     }
                     closingSum = lastAccountStatement.ClosingSum;
                 }
-
-                var addedBookingLines = new List<BookingLine>();
-                foreach (var bookingLine in account.BookingLines
+                
+                var effectedBookingLines = account.BookingLines
                     .Where(it => it.AccountStatement == null)
                     .Where(it => it.Account.NummusUser == _nummusUserService.CurrentNummusUser)
                     .Where(it => it.BookingTime.Month == generatableStatementDate.Month)
-                    .Where(it => it.BookingTime.Year == generatableStatementDate.Year)) {
+                    .Where(it => it.BookingTime.Year == generatableStatementDate.Year);
+                
+                foreach (var bookingLine in effectedBookingLines) {
                     bookingLine.AccountStatement = accountStatement;
-                    addedBookingLines.Add(bookingLine);
                     closingSum += bookingLine.Amount;
+                    _nummusDbContext.BookingLines.Update(bookingLine);
                 }
                 accountStatement.ClosingSum = closingSum;
-                
                 _nummusDbContext.AccountStatements.Add(accountStatement);
-                _nummusDbContext.BookingLines.UpdateRange(addedBookingLines);
             }
             _nummusDbContext.SaveChanges();
         }
